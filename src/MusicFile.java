@@ -116,15 +116,15 @@ public class MusicFile { // The main class for handling creation of the mp3 dire
         if(folder.isDirectory())
         {
             String[] seporatedTitle = null; // initializes empty string array.
-            File[] musCollection = folder.listFiles(); // creates a file array from the music in the playlist
-            if(musCollection.length == 0) // if theres nothing in the playlist then the two outputs are changed below
+            File[] musCollection = folder.listFiles(); // creates a file array from the music in the playlist.
+            if(musCollection.length == 0) // if there's nothing in the playlist then the two outputs are changed below.
             {
                 seporatedTitle = new String[2];
                 seporatedTitle[0] = "No songs to play";
                 seporatedTitle[1] = "Try adding songs";
                 return  seporatedTitle;
             }
-            if(musCollection[songNum].isFile()) // if there is a song at the designated index the entire name of the song is obtained
+            if(musCollection[songNum].isFile()) // if there is a song at the designated index the entire name of the song is obtained.
             {
                 songName = musCollection[songNum].getName();
             }
@@ -132,13 +132,13 @@ public class MusicFile { // The main class for handling creation of the mp3 dire
             {
                 seporatedTitle = songName.split("-");
             }
-            else { // if the song artist isn't found then "Unknown artist is displayed along with the song name.
+            else { // if the song artist isn't found then Unknown artist is displayed along with the song name.
                 seporatedTitle = new String[2];
                 seporatedTitle[0] = "Unknown Artist";
                 seporatedTitle[1] = songName;
             }
             playList = pathGetter(filePath);
-            return seporatedTitle; // the string array containing the artist and the song name is returned
+            return seporatedTitle; // the string array containing the artist and the song name is returned.
 
         }
         return null;

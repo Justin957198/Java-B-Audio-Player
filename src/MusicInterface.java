@@ -232,11 +232,11 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
         {
             disAllowAction = true; // if the playlist is null disAllowAction is set to true meaning no button can be properly used.
         }
-        if(music == null) {
+        if(music == null) { // if the music that needs to be played is null then re-initialize music by using the mp3 space
 
             if (!disAllowAction) {
                 music = mp3Space(songNum);
-                String[] songTitle = manger.songNameGetter(filePath, songNum);
+                String[] songTitle = manger.songNameGetter(filePath, songNum); // gets the songs number and title
                 if(songTitle[0] == null)
                 {
                     authorOutput.setText("None");
@@ -248,19 +248,19 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 }
             }
         }
-        if(e.getSource() == play)
+        if(e.getSource() == play) // a button for playing music if the music isnt being played
         {
-            if(music == null)
+            if(music == null) // with no music still the output will tell the user there are no songs
             {
                 authorOutput.setText("Try adding songs");
                 songTitleOutput.setText("No songs to play");
             }
-            else {
+            else { // the music will start
                 music.start();
                 music.addLineListener(this);
             }
         }
-        else if(e.getSource() == pause)
+        else if(e.getSource() == pause) // pauses the music
         {
             if(music == null)
             {
@@ -268,10 +268,10 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 songTitleOutput.setText("No songs to play");
             }
             else {
-                music.stop();
+                music.stop(); // method for pausing a song
             }
         }
-        else if(e.getSource() == restart)
+        else if(e.getSource() == restart) // will restart the song that is playing
         {
             if(music == null)
             {
@@ -284,36 +284,36 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 music.start();
             }
         }
-        else if(e.getSource() == quit)
+        else if(e.getSource() == quit) // exits the mp3 player.
         {
             System.exit(0);
         }
-        else if(e.getSource() == forward)
+        else if(e.getSource() == forward) // goes one song forward into the playlist.
         {
             if (!disAllowAction) {
-                songNum++;
-                authorOutput.setText(null);
-                songTitleOutput.setText(null);
-                if(music != null) {
+                songNum++; // increases the index
+                authorOutput.setText(null); // deletes the words in the text fields.
+                songTitleOutput.setText(null); // ^
+                if(music != null) { // if music is playing the current song is stopped and flushed out
                     music.stop();
                     music.flush();
                 }
-                music = mp3Space(songNum);
-                String[] songTitle = manger.songNameGetter(filePath, songNum);
-                if(songNum >= playList.length)
+                music = mp3Space(songNum); // new song that's next in the playlist is loaded using mp3space.
+                String[] songTitle = manger.songNameGetter(filePath, songNum); // the new title is loaded.
+                if(songNum >= playList.length) // for going forward if the index is bigger than the playlist length the index turns to 0 simulation a rap-around.
                 {
                     songNum = 0;
                 }
-                if(songTitle[0] == null)
+                if(songTitle[0] == null) // with no song title the author field is set to none.
                 {
                     authorOutput.setText("None");
                     songTitleOutput.setText(songNum + " " + songTitle[1]);
                 }
-                else {
+                else { // otherwise the new songs author and song name and song number is displayed.
                     authorOutput.setText(songTitle[0]);
                     songTitleOutput.setText(songNum + " " + songTitle[1]);
                 }
-                if(music == null)
+                if(music == null) // if after everything music is still null then the first song is initialized.
                 {
                     songNum = 0;
                     music = mp3Space(songNum);
@@ -328,7 +328,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
 
         }
-        else if(e.getSource() == back)
+        else if(e.getSource() == back) // goes backwards in the playlist
         {
             if (!disAllowAction) {
                 authorOutput.setText(null);
@@ -413,18 +413,18 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                  }
 
         }
-        if(e.getSource() == showPlaylist)
+        if(e.getSource() == showPlaylist) // shows all the songs, the number of songs, and their names in another window
         {
-            authorOutput.setText(null); songTitleOutput.setText(null);
-            playlist = new JTextArea(10, 30);
-            JScrollPane scroller = new JScrollPane(playlist);
+            authorOutput.setText(null); songTitleOutput.setText(null); // empties the text fields
+            playlist = new JTextArea(10, 30); // creates a new text area
+            JScrollPane scroller = new JScrollPane(playlist); // creates a scroller
             scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); scroller.setBounds(0,0,10,480);
-            playlist.setBackground(Color.BLACK); playlist.setForeground(Color.WHITE); playlist.setBounds(10,0,350, 500);
+            playlist.setBackground(Color.BLACK); playlist.setForeground(Color.WHITE); playlist.setBounds(10,0,350, 500); // sets the colors and size
             paylistOutput = new JFrame("Playlist");
             paylistOutput.setSize(300, 500); paylistOutput.setDefaultCloseOperation(1); paylistOutput.add(scroller);
 
             paylistOutput.setVisible(true);
-            playlist.setText(manger.getPlayList().toString());
+            playlist.setText(manger.getPlayList().toString()); // uses the method from manager to get the whole playlist
 
 
 
