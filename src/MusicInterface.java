@@ -14,13 +14,10 @@ import java.util.Scanner;
 public class MusicInterface extends Thread implements ActionListener, AdjustmentListener, LineListener {
     JFrame MusicBox; JFrame paylistOutput;
     JLabel Title;
-    JButton superBack; JButton back;
-    JButton forward; JButton superForward;
-    JButton play; JButton pause; JButton showPlaylist;
-    JButton restart; JButton quit;
-    JButton addMusic; JButton deleteSong;
-    TextField authorOutput; TextField songTitleOutput; JTextArea playlist;
-    TextField number;
+    JButton superBack, back, forward, superForward, play, pause, showPlaylist, restart, quit, addMusic, deleteSong; // initialize jButtons here.
+    TextField authorOutput, songTitleOutput; // the two long text fields on the jFrame for displaying author and song name.
+    JTextArea playlist; // a giant text area for the playlist display.
+    TextField number; // a small box like text field for displaying the songs number in the playlist
     JPanel stripe;
     String filePath = ".\\src\\MP3 Directory\\";
     File[] playList;
@@ -152,24 +149,24 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
         songNum = 0;
     }
 
-    public Clip mp3Space(int songNum) {
+    public Clip mp3Space(int songNum) { // takes the paths of the songs in the playlist and converts them to audio
         Clip sound = null;
         if(playList == null)
         {
-            return sound;
+            return sound; // if the playlist is null then null will be returned.
         }
         if(songNum < 0)
         {
-            songNum = playList.length;
+            songNum = playList.length; // if the song number is negative then loop back to the end of the playlist.
         }
         if(songNum >= playList.length)
         {
-            songNum = 0;
+            songNum = 0; // if the song number is bigger than the playlist itself then go back to index zero.
         }
         try (Scanner choice = new Scanner(System.in); AudioInputStream audioStream = AudioSystem.getAudioInputStream(playList[songNum])) {
             sound = AudioSystem.getClip();
             sound.open(audioStream);
-            int frameNum = sound.getFrameLength();
+            int frameNum = sound.getFrameLength(); // these lines are responsible for getting their length of each audio filein seconds for use in auto clicking.
             double rate = sound.getFormat().getFrameRate();
             songLength = frameNum / rate;
             System.out.println(songLength);
@@ -177,7 +174,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
 
 
-        } catch (UnsupportedAudioFileException b) {
+        } catch (UnsupportedAudioFileException b) { // if the audio file is unsupported, anything except .wav files it wont play and will skip.
             System.out.println("Audio not supported, skipping");
             songNum++;
             mp3Space(songNum);
@@ -191,7 +188,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 authorOutput.setText(songTitle[0]);
                 songTitleOutput.setText(songTitle[1]);
             }
-        } catch (IOException b) {
+        } catch (IOException b) { // the file isn't found
             System.out.println("Files actually not found");
             if(playList.length == 0)
             {
@@ -213,14 +210,14 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
         } catch (LineUnavailableException b) {
             System.out.println("...");
-        } catch (IndexOutOfBoundsException b) {
+        } catch (IndexOutOfBoundsException b) { // catches out of bounds errors, weather the playlist is empty or the song indexing number goes byond
             System.out.println("Out of bounds of list");
             if(playList == null || playList.length == 0)
             {
                 authorOutput.setText("Try adding songs");
                 songTitleOutput.setText("No songs to play");
             }
-        } catch (NullPointerException b) {
+        } catch (NullPointerException b) { // the position in the playlist is null
             System.out.println("Song doesnt exist");
         }
         return sound;
@@ -233,7 +230,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
     public void actionPerformed(ActionEvent e) {
         if(playList == null)
         {
-            disAllowAction = true;
+            disAllowAction = true; // if the playlist is null disAllowAction is set to true meaning no button can be properly used.
         }
         if(music == null) {
 
@@ -378,7 +375,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
 
         }
-        else if(e.getSource() == addMusic)
+        else if(e.getSource() == addMusic) // unused button from earlier version
         {
             JFileChooser chooser = new JFileChooser();
             int action = chooser.showOpenDialog(null);
@@ -432,7 +429,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
 
         }
-        else if(e.getSource() == deleteSong)
+        else if(e.getSource() == deleteSong) // unused button from previous version.
         {
 
             songTitleOutput.setText(null);
@@ -444,7 +441,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
 
     @Override
-    public void update(LineEvent event) {
+    public void update(LineEvent event) { // using the song length obtained earlier the mp3 player will automatically go to the next song after the current song finishes.
         if(LineEvent.Type.STOP == event.getType() && music.getFramePosition() > music.getFrameLength()-1)
         {
             music.close();
