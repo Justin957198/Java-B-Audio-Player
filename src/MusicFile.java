@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MusicFile { // The main class for handling creation of the mp3 directory and playlist
     File[] playList; // the file array for the songs
     double songLength;
-    String filePath = ".\\src\\MP3 Directory\\";
+    String filePath = "MP3 storage\\MP3 Directory";
     public static int songAmount; // the number of songs
     public MusicFile()
     {

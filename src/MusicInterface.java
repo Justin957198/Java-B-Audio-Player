@@ -9,6 +9,7 @@ import java.awt.event.AdjustmentListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class MusicInterface extends Thread implements ActionListener, AdjustmentListener, LineListener {
@@ -24,13 +25,15 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
     Clip music;
     boolean disAllowAction = false;
     int songNum; double songLength;
-    ImageIcon windowImage = new ImageIcon(getClass().getResource("MP3.png"));
+    ImageIcon windowImage;
     MusicFile manger = new MusicFile();
 
 
 
     public MusicInterface()
     {
+        windowImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("MP3.png")));
+
         System.out.println(new File("").getAbsolutePath());
         authorOutput = new TextField();
         authorOutput.setBounds(125, 60, 220, 40);
@@ -424,7 +427,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             paylistOutput.setSize(300, 500); paylistOutput.setDefaultCloseOperation(1); paylistOutput.add(scroller);
 
             paylistOutput.setVisible(true);
-            playlist.setText(manger.getPlayList().toString()); // uses the method from manager to get the whole playlist
+            playlist.setText(manger.getPlayList()); // uses the method from manager to get the whole playlist
 
 
 
