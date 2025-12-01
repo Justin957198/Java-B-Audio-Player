@@ -333,20 +333,20 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
         }
         else if(e.getSource() == back) // goes backwards in the playlist
         {
-            if (!disAllowAction) {
-                authorOutput.setText(null);
+            if (!disAllowAction) { // checks if playlist has songs in it
+                authorOutput.setText(null); // this and the line below will clear the title fields
                 songTitleOutput.setText(null);
-                songNum--;
-                if(songNum == -1)
+                songNum--; // decriments the song indexing numberallowing for backwards travel through playlist
+                if(songNum == -1) // if the number goes past zero we loop
                 {
                     songNum = playList.length-1;
                 }
-                if(music != null) {
+                if(music != null) { // Last song is stopped and flushed.
                     music.stop();
                     music.flush();
                 }
-                music = mp3Space(songNum);
-                String[] songTitle = manger.songNameGetter(filePath, songNum);
+                music = mp3Space(songNum); // new song is loaded using this method.
+                String[] songTitle = manger.songNameGetter(filePath, songNum); // The songs title is processed and returned using this method.
                 if(songTitle[0] == null)
                 {
                     authorOutput.setText("None");
@@ -378,41 +378,41 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
 
         }
-        else if(e.getSource() == addMusic) // unused button from earlier version
+        else if(e.getSource() == addMusic) // unused button from earlier version, this buttons function was to allow for useres to add mustic to an internal playlist.
         {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(); // Starts a file chooser.
             int action = chooser.showOpenDialog(null);
-            String target = ".\\src\\MP3 Directory\\";
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Wav music files (*.wav)", "wav");
+            String target = ".\\src\\MP3 Directory\\"; // Sets the directory to be added to.
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Wav music files (*.wav)", "wav"); // Only accept .wav files * may not have functioned
             chooser.setFileFilter(filter);
 
             if(action == JFileChooser.APPROVE_OPTION)
             {
 
-                String fileName = chooser.getSelectedFile().getName();
-                String newFileName = fileName.replaceAll("wav", "txt");
+                String fileName = chooser.getSelectedFile().getName(); // gets the name of a user selected file to be used to create a temp file
+                String newFileName = fileName.replaceAll("wav", "txt"); // modifies the extension to txt
                 System.out.println(target + newFileName);
 
-                File replace = new File(target + fileName);
+                File replace = new File(target + fileName); // Creates a temp text file with the samed name as the song to be addede
                 try {
-                    replace.createNewFile();
+                    replace.createNewFile(); // Creates file
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                Path selected = Path.of(chooser.getSelectedFile().getAbsolutePath());
+                Path selected = Path.of(chooser.getSelectedFile().getAbsolutePath()); // Gets the pathof the selected file
 
                 try {
-                    Files.move(selected, replace.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    authorOutput.setText("Song Added");
+                    Files.move(selected, replace.toPath(), StandardCopyOption.REPLACE_EXISTING); // Replaces the temp tex file with the song file, this is possible because they both share the same name.
+                    authorOutput.setText("Song Added"); // If all goes well output a success messege
 
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                playList = manger.pathGetter(filePath);
+                playList = manger.pathGetter(filePath); // Reload the playlist
 
             }
             else {
-                authorOutput.setText("nothing added");
+                authorOutput.setText("nothing added"); // If something goes wrong send an error messege
                  }
 
         }
