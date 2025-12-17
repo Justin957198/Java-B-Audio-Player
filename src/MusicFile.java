@@ -1,5 +1,7 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +14,8 @@ public class MusicFile { // The main class for handling creation of the mp3 dire
     double songLength;
     String filePath = "MP3 storage\\MP3 Directory";
     public static int songAmount; // the number of songs
+    File instructions;
+    FileWriter writer;
     public MusicFile()
     {
         playList = pathGetter(filePath);
@@ -41,7 +45,11 @@ public class MusicFile { // The main class for handling creation of the mp3 dire
                 String dirPath = "MP3 Storage\\MP3 Directory"; // creates a folder called mp3 storage, then creates an inner folder called mp3 directory
                 Files.createDirectories(Paths.get(dirPath));
                 filePath = folderDir;
-                playList = pathGetter(dirPath); // restarts the function this time with a valid mp3 storage location.
+                playList = pathGetter(dirPath);// restarts the function this time with a valid mp3 storage location.
+                instructions = new File("MP3 Storage\\Instructions.txt");
+                writer = new FileWriter(instructions);
+                writer.write("Copy songs to the MP3 Directory, Only accepts .wav songs.");
+                writer.close();
                 return  playList; // returns the playlist of music even if there are no songs.
             } catch (IOException e) {
                 System.out.println(e);

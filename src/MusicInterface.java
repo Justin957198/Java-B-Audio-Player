@@ -441,10 +441,14 @@ public class MusicInterface extends Thread implements ActionListener, LineListen
             authorOutput.setText("Enter song Number ->");
             String success = manger.deleteSong(number.getText());
             authorOutput.setText(success);
-        } else if(e.getSource() == superForward) {
+        } else if(e.getSource() == superForward) { // Randomizes the song number with bounds of + 1 to the end of the playlist at random allowing for forward skipping.
             if(!disAllowAction) {
                 ran = new Random();
-                songNum = ran.nextInt(songNum++, playList.length);
+                if(playList.length == 0) {
+
+                } else {
+                    songNum = ran.nextInt(songNum++, playList.length);
+                }
                 //songNum++; // increases the index
                 authorOutput.setText(null); // deletes the words in the text fields.
                 songTitleOutput.setText(null); // ^
@@ -481,7 +485,7 @@ public class MusicInterface extends Thread implements ActionListener, LineListen
                     music.addLineListener(this);
                 }
             }
-        } else if(e.getSource() == superBack) {
+        } else if(e.getSource() == superBack) { // Works the same as the back button but randomizes the song num from 0 to 1 - the current song number allowing for back skipping
             ran = new Random();
             if(!disAllowAction) {
                 if(songNum < 1) {
