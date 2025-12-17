@@ -10,9 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 
-public class MusicInterface extends Thread implements ActionListener, AdjustmentListener, LineListener {
+public class MusicInterface extends Thread implements ActionListener, LineListener {
     JFrame MusicBox; JFrame paylistOutput;
     JLabel Title;
     JButton superBack, back, forward, superForward, play, pause, showPlaylist, restart, quit, addMusic, deleteSong; // initialize jButtons here.
@@ -27,6 +28,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
     int songNum; double songLength;
     ImageIcon windowImage;
     MusicFile manger = new MusicFile();
+    Random ran;
 
 
 
@@ -177,7 +179,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
 
 
-        } catch (UnsupportedAudioFileException b) { // if the audio file is unsupported, anything except .wav files it wont play and will skip.
+        } catch (UnsupportedAudioFileException b) { // if the audio file is unsupported, anything except .wav files it won't play and will skip.
             System.out.println("Audio not supported, skipping");
             songNum++;
             mp3Space(songNum);
@@ -213,7 +215,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
         } catch (LineUnavailableException b) {
             System.out.println("...");
-        } catch (IndexOutOfBoundsException b) { // catches out of bounds errors, weather the playlist is empty or the song indexing number goes byond
+        } catch (IndexOutOfBoundsException b) { // catches out of bounds errors, weather the playlist is empty or the song indexing number goes beyond
             System.out.println("Out of bounds of list");
             if(playList == null || playList.length == 0)
             {
@@ -251,7 +253,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 }
             }
         }
-        if(e.getSource() == play) // a button for playing music if the music isnt being played
+        if(e.getSource() == play) // a button for playing music if the music isn't being played
         {
             if(music == null) // with no music still the output will tell the user there are no songs
             {
@@ -260,6 +262,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
             else { // the music will start
                 music.start();
+                number.setText(String.valueOf(songNum));
                 music.addLineListener(this);
             }
         }
@@ -301,7 +304,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                     music.stop();
                     music.flush();
                 }
-                music = mp3Space(songNum); // new song that's next in the playlist is loaded using mp3space.
+                music = mp3Space(songNum); // new song that's next in the playlist is loaded using mp3 space.
                 String[] songTitle = manger.songNameGetter(filePath, songNum); // the new title is loaded.
                 if(songNum >= playList.length) // for going forward if the index is bigger than the playlist length the index turns to 0 simulation a rap-around.
                 {
@@ -310,11 +313,12 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 if(songTitle[0] == null) // with no song title the author field is set to none.
                 {
                     authorOutput.setText("None");
-                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                    songTitleOutput.setText(songTitle[1]);
                 }
                 else { // otherwise the new songs author and song name and song number is displayed.
                     authorOutput.setText(songTitle[0]);
-                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                    songTitleOutput.setText(songTitle[1]);
+                    number.setText(String.valueOf(songNum));
                 }
                 if(music == null) // if after everything music is still null then the first song is initialized.
                 {
@@ -336,7 +340,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             if (!disAllowAction) { // checks if playlist has songs in it
                 authorOutput.setText(null); // this and the line below will clear the title fields
                 songTitleOutput.setText(null);
-                songNum--; // decriments the song indexing numberallowing for backwards travel through playlist
+                songNum--; // decrements the song indexing number allowing for backwards travel through playlist
                 if(songNum == -1) // if the number goes past zero we loop
                 {
                     songNum = playList.length-1;
@@ -350,11 +354,13 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 if(songTitle[0] == null)
                 {
                     authorOutput.setText("None");
-                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                    songTitleOutput.setText(songTitle[1]);
+                    number.setText(String.valueOf(songNum));
                 }
                 else {
                     authorOutput.setText(songTitle[0]);
-                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                    songTitleOutput.setText(songTitle[1]);
+                    number.setText(String.valueOf(songNum));
                 }
                 if(music == null)
                 {
@@ -378,7 +384,7 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             }
 
         }
-        else if(e.getSource() == addMusic) // unused button from earlier version, this buttons function was to allow for useres to add mustic to an internal playlist.
+        else if(e.getSource() == addMusic) // unused button from earlier version, this buttons function was to allow for users to add music to an internal playlist.
         {
             JFileChooser chooser = new JFileChooser(); // Starts a file chooser.
             int action = chooser.showOpenDialog(null);
@@ -393,17 +399,17 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
                 String newFileName = fileName.replaceAll("wav", "txt"); // modifies the extension to txt
                 System.out.println(target + newFileName);
 
-                File replace = new File(target + fileName); // Creates a temp text file with the samed name as the song to be addede
+                File replace = new File(target + fileName); // Creates a temp text file with the same name as the song to be added
                 try {
                     replace.createNewFile(); // Creates file
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                Path selected = Path.of(chooser.getSelectedFile().getAbsolutePath()); // Gets the pathof the selected file
+                Path selected = Path.of(chooser.getSelectedFile().getAbsolutePath()); // Gets the path of the selected file
 
                 try {
                     Files.move(selected, replace.toPath(), StandardCopyOption.REPLACE_EXISTING); // Replaces the temp tex file with the song file, this is possible because they both share the same name.
-                    authorOutput.setText("Song Added"); // If all goes well output a success messege
+                    authorOutput.setText("Song Added"); // If all goes well output a success message
 
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -412,13 +418,11 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
             }
             else {
-                authorOutput.setText("nothing added"); // If something goes wrong send an error messege
-                 }
+                    authorOutput.setText("nothing added"); // If something goes wrong send an error message.
+            }
 
-        }
-        if(e.getSource() == showPlaylist) // shows all the songs, the number of songs, and their names in another window
-        {
-            authorOutput.setText(null); songTitleOutput.setText(null); // empties the text fields
+        } else if(e.getSource() == showPlaylist) { // shows all the songs, the number of songs, and their names in another window
+            //authorOutput.setText(null); songTitleOutput.setText(null); // empties the text fields
             playlist = new JTextArea(10, 30); // creates a new text area
             JScrollPane scroller = new JScrollPane(playlist); // creates a scroller
             scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); scroller.setBounds(0,0,10,480);
@@ -431,14 +435,96 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
 
 
 
-        }
-        else if(e.getSource() == deleteSong) // unused button from previous version.
-        {
+        } else if(e.getSource() == deleteSong) { // unused button from previous version.
 
             songTitleOutput.setText(null);
             authorOutput.setText("Enter song Number ->");
             String success = manger.deleteSong(number.getText());
             authorOutput.setText(success);
+        } else if(e.getSource() == superForward) {
+            if(!disAllowAction) {
+                ran = new Random();
+                songNum = ran.nextInt(songNum++, playList.length);
+                //songNum++; // increases the index
+                authorOutput.setText(null); // deletes the words in the text fields.
+                songTitleOutput.setText(null); // ^
+                if(music != null) { // if music is playing the current song is stopped and flushed out
+                    music.stop();
+                    music.flush();
+                }
+                music = mp3Space(songNum); // new song that's next in the playlist is loaded using mp3 space.
+                String[] songTitle = manger.songNameGetter(filePath, songNum); // the new title is loaded.
+                if(songNum >= playList.length) // for going forward if the index is bigger than the playlist length the index turns to 0 simulation a rap-around.
+                {
+                    songNum = 0;
+                }
+                if(songTitle[0] == null) // with no song title the author field is set to none.
+                {
+                    authorOutput.setText("None");
+                    songTitleOutput.setText(songTitle[1]);
+                }
+                else { // otherwise the new songs author and song name and song number is displayed.
+                    authorOutput.setText(songTitle[0]);
+                    songTitleOutput.setText(songTitle[1]);
+                    number.setText(String.valueOf(songNum));
+                }
+                if(music == null) // if after everything music is still null then the first song is initialized.
+                {
+                    songNum = 0;
+                    music = mp3Space(songNum);
+                    songTitle = manger.songNameGetter(filePath, songNum);
+                    authorOutput.setText(songTitle[0]);
+                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                }
+                else {
+                    music.start();
+                    music.addLineListener(this);
+                }
+            }
+        } else if(e.getSource() == superBack) {
+            ran = new Random();
+            if(!disAllowAction) {
+                if(songNum < 1) {
+                    songNum = 0;
+                } else {
+                    songNum = ran.nextInt(0, songNum--);
+                }
+                //songNum++; // increases the index
+                authorOutput.setText(null); // deletes the words in the text fields.
+                songTitleOutput.setText(null); // ^
+                if(music != null) { // if music is playing the current song is stopped and flushed out
+                    music.stop();
+                    music.flush();
+                }
+                music = mp3Space(songNum); // new song that's next in the playlist is loaded using mp3 space.
+                String[] songTitle = manger.songNameGetter(filePath, songNum); // the new title is loaded.
+                if(songNum >= playList.length) // for going forward if the index is bigger than the playlist length the index turns to 0 simulation a rap-around.
+                {
+                    songNum = 0;
+                }
+                if(songTitle[0] == null) // with no song title the author field is set to none.
+                {
+                    authorOutput.setText("None");
+                    songTitleOutput.setText(songTitle[1]);
+                }
+                else { // otherwise the new songs author and song name and song number is displayed.
+                    authorOutput.setText(songTitle[0]);
+                    songTitleOutput.setText(songTitle[1]);
+                    number.setText(String.valueOf(songNum));
+                }
+                if(music == null) // if after everything music is still null then the first song is initialized.
+                {
+                    songNum = 0;
+                    music = mp3Space(songNum);
+                    songTitle = manger.songNameGetter(filePath, songNum);
+                    authorOutput.setText(songTitle[0]);
+                    songTitleOutput.setText(songNum + " " + songTitle[1]);
+                }
+                else {
+                    music.start();
+                    music.addLineListener(this);
+                }
+            }
         }
     }
 
@@ -451,10 +537,5 @@ public class MusicInterface extends Thread implements ActionListener, Adjustment
             forward.doClick();
             System.out.println("on to the next");
         }
-    }
-
-    @Override
-    public void adjustmentValueChanged(AdjustmentEvent e) {
-
     }
 }

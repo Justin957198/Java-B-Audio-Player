@@ -112,7 +112,7 @@ public class MusicFile { // The main class for handling creation of the mp3 dire
         {
             songNum = 0;
         }
-        File folder = new File("MP3 Storage\\MP3 Directory"); // getys the folder / playlist with the songs inside
+        File folder = new File("MP3 Storage\\MP3 Directory"); // gets the folder / playlist with the songs inside
         if(folder.isDirectory())
         {
             String[] seporatedTitle = null; // initializes empty string array.
