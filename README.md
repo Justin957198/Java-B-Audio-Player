@@ -1,4 +1,4 @@
-<h1>Java Based MP3 Player.</h1> <br>
+<h1>Java Based Audio Player.</h1> <br>
   This program is a very simple music /  sound player in the format of an MP3 player. 
   It utilizes java swing for UI elements such as forward, backward, pause, etc. 
   Once ran once a folder is created with a text file of instructions and an inner folder for song storage then songs can be added (only .wav). <br>
